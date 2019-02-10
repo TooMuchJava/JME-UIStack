@@ -89,11 +89,22 @@ public class UIStack {
     }
     public void swapUI(AbstractUI ui1, AbstractUI ui2) {
         int index = stack.indexOf(ui1);
-        stack.set(index, ui2);
-        _removeUI(ui1);
+        if (index == -1) stack.add(ui2);
+        else {
+            stack.set(index, ui2);
+            _removeUI(ui1);
+        }
         addUI(ui2);
+        added.remove(ui2);
         if (index == stack.size() - 1) {
             _viewUI(ui2);
+        }
+    }
+    public void swapActiveUI(AbstractUI newUI) {
+        if (!stack.isEmpty()) {
+            swapUI(stack.get(stack.size() - 1), newUI);
+        } else {
+            addAndViewUI(newUI);
         }
     }
     public void update(float tpf) {
