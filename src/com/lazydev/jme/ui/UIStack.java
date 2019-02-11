@@ -48,6 +48,7 @@ public class UIStack {
         viewUI(ui);
     }
     public void removeUI(AbstractUI ui) {
+        if (ui == null) return;
         if (added.contains(ui)) {
             added.remove(ui);
             return;
@@ -56,11 +57,13 @@ public class UIStack {
         _removeUI(ui);
     }
     protected void _removeUI(AbstractUI ui) {
+        if (ui == null) return;
         _shelveUI(ui);
         stack.remove(ui);
         ui.onRemove();
     }
     protected void _viewUI(AbstractUI ui) {
+        if (ui == null) return;
         ui.onView();
         rootNode.attachChild(ui.rootNode);
         guiNode.attachChild(ui.guiNode);
@@ -69,15 +72,18 @@ public class UIStack {
         stack.add(ui);
     }
     public void viewUI(AbstractUI ui) {
+        if (ui == null) return;
         if (stack.size() - 1 >= 0) _shelveUI(stack.get(stack.size() - 1));
         _viewUI(ui);
     }
     protected void _shelveUI(AbstractUI ui) {
+        if (ui == null) return;
         ui.onShelve();
         rootNode.detachChild(ui.rootNode);
         guiNode.detachChild(ui.guiNode);
     }
     protected void returnToUI(AbstractUI ui) {
+        if (ui == null) return;
         int index = stack.indexOf(ui), currentIndex = stack.size();
         for (int idx = stack.size(); idx < index; idx--) {
             _removeUI(stack.get(idx));
@@ -88,6 +94,10 @@ public class UIStack {
         removeUI(stack.get(stack.size() - 1));
     }
     public void swapUI(AbstractUI ui1, AbstractUI ui2) {
+        if (ui1 == null) return;
+        if (ui2 == null) {
+            removeUI(ui1);
+        }
         int index = stack.indexOf(ui1);
         if (index == -1) stack.add(ui2);
         else {
@@ -101,6 +111,7 @@ public class UIStack {
         }
     }
     public void swapActiveUI(AbstractUI newUI) {
+        if (newUI == null) return;
         if (!stack.isEmpty()) {
             swapUI(stack.get(stack.size() - 1), newUI);
         } else {
@@ -109,7 +120,6 @@ public class UIStack {
     }
     public void update(float tpf) {
         if (!stack.isEmpty()) stack.get(stack.size() - 1).update(tpf);
-        
     }
     public AbstractUI getNearestUI(Class<? extends AbstractUI> clazz) {
         for (int i = stack.size() - 1; i > 0; i--) {
